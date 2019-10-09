@@ -3,31 +3,53 @@
  * acerca de los pasos, distancia, ..... que una persona (hombre o mujer)
  * ha dado en una semana. 
  * 
- * @author    - pon aquí tu nombre - 
+ * @author    - Zuriñe Serrano Zazpe - 
  * 
  */
 public class Podometro {
-   
-    
-    
+    private final char MUJER = 'M';
+    private final char HOMBRE = 'H';
+    private final double ZANCADA_HOMBRE = 0.45;
+    private final double ZANCADA_MUJER = 0.41;
+    private final int SABADO = 6;
+    private final int DOMINGO = 7;
+
+    private char sexo;
+    private double longitudZancada;
+    private double altura;
+    private String marca;
+    private int totalPasosLaborales;
+    private int totalPasosSabado;
+    private int totalPasosDomingo;
+    private double totalDistanciaSemana;
+    private double totalDistanciaFinSemana;
+    private int tiempo;
+    private int caminatasNoche;
 
     /**
      * Inicializa el podómetro con la marca indicada por el parámetro.
      * El resto de atributos se ponen a 0 y el sexo, por defecto, es mujer
      */
-    public Podometro() {
-
-         
+    public Podometro(String queMarca) {
+        marca = queMarca;
+        sexo = 0;
+        longitudZancada = 0;
+        altura = 0;
+        totalPasosLaborales = 0;
+        totalPasosSabado = 0;
+        totalPasosDomingo = 0;
+        totalDistanciaSemana = 0;
+        totalDistanciaFinSemana = 0;
+        tiempo = 0;
+        caminatasNoche = 0;
     }
 
     /**
      * accesor para la marca
      *  
      */
-    public    getMarca() {
-
-        
-
+    public String getMarca() {
+        return marca;
     }
 
     /**
@@ -40,31 +62,71 @@ public class Podometro {
      *  
      */
     public void configurar(double queAltura, char queSexo) {
+        if (queSexo == HOMBRE){
+            Math.ceil(queAltura*0.45);
+        }
+        else if (queSexo == MUJER){
+            Math.floor(queAltura*0.41);
+        }
 
-        
+        /**
+         *  Recibe cuatro parámetros que supondremos correctos:
+         *  pasos - el nº de pasos caminados
+         *  dia - nº de día de la semana en que se ha hecho la caminata 
+         *  (1 - Lunes, 2 - Martes - .... - 6 - Sábado, 7 - Domingo)
+         *  horaInicio – hora de inicio de la caminata
+         *  horaFina – hora de fin de la caminata
+         *    
+         *  A partir de estos parámetros el método debe realizar ciertos cálculos
+         *  y actualizará el podómetro adecuadamente  
+         *   
+         *  (leer enunciado del ejercicio)
+         */
+        public void registrarCaminata(int pasos, int dia, int horaInicio, int horaFin) {
+
+        switch (dia){
+            case 1: 
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            {
+                totalPasosLaborales += pasos;
+                totalDistanciaSemana += (pasos * longitudZancada / 100000);
+                break;
+            }
+            case SABADO: {
+                totalPasosSabado += pasos;
+                totalDistanciaFinSemana += (pasos * longitudZancada / 100000);
+                break;
+            }
+            case DOMINGO: {
+                totalPasosDomingo += pasos;
+                totalDistanciaFinSemana += (pasos * longitudZancada / 100000);
+                break;
+            }
+        }
+
+        int horaInicio = horaInicio / 100;
+        int minutoInicio = horaInicio % (horaInicio * 100);
+        int horaFin = horaFin / 100;
+        int minutoFin = horaFin % (horaFin * 100);
+
+        if (minutoInicio < minutoFin) {
+            tiempo += ((horaFin - horaInicio) * 60) + (minutoFin - minutoInicio);
+        }
+        else if(minutoInicio == minutoFin) {
+            tiempo += (horaFin - horaInicio) * 60;
+        }
+        else {
+            tiempo += ((horaFin - horaInicio - 1) * 60) + (minutoFin - minutoInicio);
+        }
+        if (horaInicio > 20){
+            caminatasNoche++;
+        }
     }
 
-     /**
-     *  Recibe cuatro parámetros que supondremos correctos:
-     *    pasos - el nº de pasos caminados
-     *    dia - nº de día de la semana en que se ha hecho la caminata 
-     *              (1 - Lunes, 2 - Martes - .... - 6 - Sábado, 7 - Domingo)
-     *    horaInicio – hora de inicio de la caminata
-     *    horaFina – hora de fin de la caminata
-     *    
-     *    A partir de estos parámetros el método debe realizar ciertos cálculos
-     *    y  actualizará el podómetro adecuadamente  
-     *   
-     *   (leer enunciado del ejercicio)
-     */
-    public void registrarCaminata(int pasos, int dia, int horaInicio,
-                            int horaFin) {
-
-        
-
-    }
-    
-     /**
+    /**
      * Muestra en pantalla la configuración del podómetro
      * (altura, sexo y longitud de la zancada)
      * 
@@ -72,10 +134,17 @@ public class Podometro {
      *  
      */
     public void printConfiguracion() {
-
-        
-
-    }
+        System.out.println("configuración del podómetro");
+        System.out.println("*********************************");
+        System.out.println("Altura: " + altura/100 + "mtos");
+        if (sexo == MUJER) {
+            System.out.println("Sexo: MUJER");
+        }
+        else {
+            System.out.println("Sexo: HOMBRE");
+        }
+        System.out.println("\nLongitud zancada: " + longitudZancada / 100 + "mtos");
+    }    
 
     /**
      * Muestra en pantalla información acerca de la distancia recorrida,
@@ -85,22 +154,44 @@ public class Podometro {
      *  
      */
     public void printEstadísticas() {
-
-        
+        System.out.println("Estadísticas");
+        System.out.println("*********************************");
+        System.out.println("Distancia recorrida toda la semana: " +
+            totalDistanciaSemana + "Km");
+        System.out.println("Distancia recorrida fin de semana: " +
+            totalDistanciaFinSemana + "Km");
+        System.out.println("Nº pasos días laborales: " + 
+            totalPasosLaborales);
+        System.out.println("Nº pasos SÁBADO: " +
+            totalPasosSabado);
+        System.out.println("Nº pasos DOMINGO: " +
+            totalPasosDomingo);
+        System.out.println("Nº caminatas realizadas a partir de las 21h.: " +
+            caminatasNoche);
+        System.out.println("Tiempo total caminado en la semana: " +
+            (tiempo / 60) +"h. y " + (tiempo % 60) + "m.");
+        System.out.println("Día/s con más pasos caminados: LABORALES");
 
     }
-
-   
-
     /**
      *  Calcula y devuelve un String que representa el nombre del día
      *  en el que se ha caminado más pasos - "SÁBADO"   "DOMINGO" o  "LABORABLES"
      */
     public String diaMayorNumeroPasos() {
+        if (totalPasosSabado > totalPasosDomingo &&
+        totalPasosSabado > totalPasosLaborales){
+            return "SÁBADO";
+        }
 
-        
-        
+        if (totalPasosDomingo > totalPasosSabado && 
+        totalPasosDomingo > totalPasosLaborales){
+            return "DOMINGO";
+        }
 
+        if (totalPasosLaborales > totalPasosSabado &&
+        totalPasosLaborales > totalPasosDomingo){
+            return "LABORABLES";
+        }
     }
 
     /**
@@ -110,9 +201,17 @@ public class Podometro {
      *  
      */    
     public void reset() {
+        sexo = MUJER;
+        longitudZancada = 0;
+        altura = 0;
 
-        
+        totalPasosLaborales = 0;
+        totalPasosSabado = 0;
+        totalPasosDomingo = 0;
 
+        totalDistanciaSemana = 0;
+        totalDistanciaFinSemana = 0;
+        tiempo = 0;
+        caminatasNoche = 0;
     }
-
 }
